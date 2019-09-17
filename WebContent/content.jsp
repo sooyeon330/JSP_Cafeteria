@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-[미림전자에 오신 걸 환영합니다.]
+[미림급식에 오신 걸 환영합니다.]
 </body>
 </html>
