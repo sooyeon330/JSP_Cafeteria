@@ -18,7 +18,7 @@ Boolean connect = false;
 	
 try{
     Class.forName(driver);
-    conn=DriverManager.getConnection(url,"system","1234"); //자신의 아이디와 비밀번호
+    conn=DriverManager.getConnection(url,"cafeteria","3616"); //자신의 아이디와 비밀번호
     connect = true;
     conn.close();
 }catch(Exception e){
