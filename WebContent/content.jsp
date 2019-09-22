@@ -26,7 +26,7 @@
     <script>
     $(function(){  
     	var m = <%=request.getParameter("m")%>
-/*     	
+     	
     	if(m==1) {
     		$(".lun").css("display","none");
     		$(".din").css("display","none");
@@ -37,7 +37,7 @@
     		$(".brf").css("display","none");
     		$(".lun").css("display","none");
     	}
-    	 */
+    	 
     	
         $('#datepicker').datepicker({  
             
