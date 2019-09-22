@@ -8,18 +8,37 @@
 <head>
   
     <style>
-     .card-text{
-     	text-align: left;
-     }
+    
     .MenuDiv{
     }
     aside,section{
     	float:left;
-    	margin:20px;
+    	margin:15px;
     }
+    nav{
+    	padding:10px;
+    }
+    .card{
+    	width:188px;
+    }
+    
     </style>
     <script>
     $(function(){  
+    	var m = <%=request.getParameter("m")%>
+/*     	
+    	if(m==1) {
+    		$(".lun").css("display","none");
+    		$(".din").css("display","none");
+    	}else if(m==2) {
+    		$(".brf").css("display","none");
+    		$(".din").css("display","none");
+    	}else if(m==3) {
+    		$(".brf").css("display","none");
+    		$(".lun").css("display","none");
+    	}
+    	 */
+    	
         $('#datepicker').datepicker({  
             
         	dateFormat: 'yy-mm-dd',
@@ -28,11 +47,9 @@
             dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
             altField: "#date",
             
-            	
         });  
         $("#datepicker").datepicker("show");
-       	$("#form").submit();
-      
+    
 	});
 	
 	
@@ -49,10 +66,16 @@
           <span class="date-year">2019</span>
   </div>
   <div id="datepicker"></div>
-  <form id="form" action="content.jsp" method="post">
+  <form id="form" action="main.jsp" method="post">
  	 <input name="picdate" id="date" type="text">
+ 	 <input type="submit" value="찾기">
   </form>
 </div>
+<nav>
+	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=1'">조식</button> 
+	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=2'">중식</button>
+	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=3'">석식</button>
+</nav>
 </aside>
 <section>
 <%
@@ -60,7 +83,7 @@
 	request.setCharacterEncoding("utf-8");
 
 	String date = request.getParameter("picdate");
-	out.println(date);
+	
 
 
 Connection conn =null;
@@ -70,10 +93,17 @@ try{
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String user = "cafeteria";
 	String pass = "3616";
+	String sql="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria";
 	
 	Class.forName("oracle.jdbc.driver.OracleDriver");
 	conn = DriverManager.getConnection(url, user, pass);
-	pstmt = conn.prepareStatement("select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria");
+		
+	if(date!= null){
+		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
+				+ " where eatdate = '" +date+ "'";
+	
+	}
+	pstmt = conn.prepareStatement(sql);
 	rs = pstmt.executeQuery();
 	
 	ArrayList<Cafeteria> menuall = new ArrayList<>();
@@ -118,19 +148,24 @@ try{
 	             <%= menuall.get(i).getEatdate()+" ("+menuall.get(i).getEatday()+")"%>
 	            </div>
 	            <div class="card-body">
-	            <p class='card-text'>
+	            <p class="brf" class='card-text'>
 <%
 				for(String menulist:menuall.get(i).getBreakfast()){ //정확한 값만 추출하기위함
 					out.println(menulist);
 				}
-			/* 	out.println("<hr>");
+%>
+				</p>
+				<p class='lun' class='card-text'>
+<%				
 				for(String menulist:menuall.get(i).getLunch()){ //정확한 값만 추출하기위함
 					out.println(menulist);
 				}
-				out.println("<hr>");
-				for(String menulist:menuall.get(i).getDinner()){ //정확한 값만 추출하기위함
+%>				</p>
+				<p class='din' class='card-text'>
+				
+<%				for(String menulist:menuall.get(i).getDinner()){ //정확한 값만 추출하기위함
 					out.println(menulist);
-				}  */
+				} 
 %>
 				</p>
 	            </div>

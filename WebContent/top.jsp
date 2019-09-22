@@ -2,5 +2,8 @@
 	pageEncoding="UTF-8"%>
 
 <div class="top">
+<a href="main.jsp">
 <img src="img/main_title_logo.png">
+</a>
+
 </div>
