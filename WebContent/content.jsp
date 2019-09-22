@@ -20,6 +20,7 @@
     }
     .card{
     	width:188px;
+    	margin-bottom: 5px;
     }
     
     </style>
@@ -58,6 +59,14 @@
 </head>
 <body>
 <aside>
+<div class="topnav">
+  <div class="search-container">
+    <form action="main.jsp">
+      <input type="text" placeholder="Search.." name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</div>
 <div id="calendar">
   <div class="date-block ui-datepicker-trigger">
           <div class="date-day">Monday</div>
@@ -70,11 +79,13 @@
  	 <input name="picdate" id="date" type="text">
  	 <input type="submit" value="찾기">
   </form>
+ 
 </div>
 <nav>
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=1'">조식</button> 
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=2'">중식</button>
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=3'">석식</button>
+	<button type="button" class="btn btn-success" onclick="location.href='main.jsp'">전체보기</button>
 </nav>
 </aside>
 <section>
@@ -83,7 +94,7 @@
 	request.setCharacterEncoding("utf-8");
 
 	String date = request.getParameter("picdate");
-	
+	String search  = request.getParameter("search");
 
 
 Connection conn =null;
@@ -101,8 +112,13 @@ try{
 	if(date!= null){
 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
 				+ " where eatdate = '" +date+ "'";
-	
 	}
+	
+	if(search!= null){
+		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
+				+ " where dinner like '%"+search+"%' or  lunch like '%"+search+"%' or breakfast like '%"+search+"%' ";
+	}
+	
 	pstmt = conn.prepareStatement(sql);
 	rs = pstmt.executeQuery();
 	
