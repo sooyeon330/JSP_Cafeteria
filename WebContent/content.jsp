@@ -6,11 +6,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <style>
+     
+    </style>
 </head>
 <body>
-<table>
 <%
 Connection conn =null;
 PreparedStatement pstmt = null;
@@ -59,16 +63,36 @@ try{
 
 
 		for(int i=0; i<menuall.size(); i++){
+			if((i+1)== 1 || i%5==0	) { out.print("<div class='row'>");}
 %>
-		<tr>
-			<td><%= menuall.get(i).getEatdate() %></td>
-			<td><%= menuall.get(i).getEatday() %></td>
-			<td><%= menuall.get(i).getBreakfast() %></td>
-			<td><%= menuall.get(i).getLunch() %></td>
-			<td><%= menuall.get(i).getDinner() %></td>
-		</tr>
-
-<%	
+	        <div class="col-2">
+	          <div class="card">
+	            <div class="card-header">
+	             <%= menuall.get(i).getEatdate()+"  , " +(i+1) %>
+	            </div>
+	            <div class="card-body">
+	            <p class='card-text'>
+<%
+				for(String menulist:menuall.get(i).getBreakfast()){ //정확한 값만 추출하기위함
+					out.println(menulist);
+				}
+			/* 	out.println("<hr>");
+				for(String menulist:menuall.get(i).getLunch()){ //정확한 값만 추출하기위함
+					out.println(menulist);
+				}
+				out.println("<hr>");
+				for(String menulist:menuall.get(i).getDinner()){ //정확한 값만 추출하기위함
+					out.println(menulist);
+				}  */
+%>
+				</p>
+	            </div>
+	          </div>
+	        </div>
+	        
+<%
+		if(i!=5 && (i+1)%5==0) { out.print("</div>");}
+	
 		}//for
 
 }catch(Exception e){
@@ -108,6 +132,21 @@ try{
  }
  
  %>
- </table>
+ 
+<!--   <div class="row">
+        <div class="col-4">
+          <p>Card</p>
+          <div class="card">
+            <div class="card-header">
+              My Card
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Lorem</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam egestas sed sem ut malesuada.</p>
+              <a href="#" class="btn btn-primary">More</a>
+            </div>
+          </div>
+        </div>
+  </div> -->
 </body>
 </html>
