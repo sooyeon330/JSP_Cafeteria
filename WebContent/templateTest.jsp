@@ -5,8 +5,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Mirim Cafeteria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
 <link rel="stylesheet" href="css/main.css">
-
+<link rel="stylesheet" href="css/datepicker.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 </head>
 
 <body>

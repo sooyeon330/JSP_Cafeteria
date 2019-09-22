@@ -6,18 +6,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  
     <style>
      .card-text{
      	text-align: left;
      }
+    .MenuDiv{
+    }
+    aside,section{
+    	float:left;
+    	margin:20px;
+    }
     </style>
+    <script>
+    $(function(){  
+        $('#datepicker').datepicker({  
+            
+        	dateFormat: 'yy-mm-dd',
+            inline: true,  
+            showOtherMonths: true,
+            dayNamesMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            altField: "#date",
+            
+            	
+        });  
+        $("#datepicker").datepicker("show");
+       	$("#form").submit();
+      
+	});
+	
+	
+
+    </script>
 </head>
 <body>
+<aside>
+<div id="calendar">
+  <div class="date-block ui-datepicker-trigger">
+          <div class="date-day">Monday</div>
+          <div class="date-date">9</div>
+          <span class="date-month">September</span>,
+          <span class="date-year">2019</span>
+  </div>
+  <div id="datepicker"></div>
+  <form id="form" action="content.jsp" method="post">
+ 	 <input name="picdate" id="date" type="text">
+  </form>
+</div>
+</aside>
+<section>
 <%
+
+	request.setCharacterEncoding("utf-8");
+
+	String date = request.getParameter("picdate");
+	out.println(date);
+
+
 Connection conn =null;
 PreparedStatement pstmt = null;
 ResultSet rs = null;
@@ -67,7 +112,7 @@ try{
 		for(int i=0; i<menuall.size(); i++){
 			if((i+1)== 1 || i%5==0	) { out.print("<div class='row'>");}
 %>
-	        <div class="col-2">
+	        <div class="col">
 	          <div class="card">
 	            <div class="card-header">
 	             <%= menuall.get(i).getEatdate()+" ("+menuall.get(i).getEatday()+")"%>
@@ -97,30 +142,34 @@ try{
 	
 		}//for
 
-}catch(Exception e){
-	e.printStackTrace();
-}finally{
-	if(rs!=null){
-		try{
-			rs.close();
 		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(rs!=null){
+				try{
+					rs.close();
+				}catch(Exception e){
+				}
+			}//if
+			if(pstmt!=null){
+				try{
+					pstmt.close();
+				}catch(Exception e){
+				}
+			}//if
+			if(conn!=null){
+				try{
+					conn.close();
+				}catch(Exception e){
+				}
+			}//if
 		}
-	}//if
-	if(pstmt!=null){
-		try{
-			pstmt.close();
-		}catch(Exception e){
-		}
-	}//if
-	if(conn!=null){
-		try{
-			conn.close();
-		}catch(Exception e){
-		}
-	}//if
-}
 %>
- 	
+</section>
+
+
+</body>
+</html>
  	
  <%!
  
@@ -135,20 +184,9 @@ try{
  
  %>
  
-<!--   <div class="row">
-        <div class="col-4">
-          <p>Card</p>
-          <div class="card">
-            <div class="card-header">
-              My Card
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">Lorem</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam egestas sed sem ut malesuada.</p>
-              <a href="#" class="btn btn-primary">More</a>
-            </div>
-          </div>
-        </div>
-  </div> -->
-</body>
-</html>
+ 
+ 
+ 
+ 
+ 
+ 
