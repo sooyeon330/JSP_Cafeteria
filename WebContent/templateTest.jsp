@@ -5,7 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Mirim Cafeteria</title>
+<link rel="stylesheet" href="css/main.css">
+
 </head>
+
 <body>
 	<%
 		request.setCharacterEncoding("utf-8");
@@ -21,8 +24,8 @@
 		</tr>
 		
 		<tr>
-			<td class="content" valign="top"><jsp:include
-					page="<%=contentPage%>" flush="false" /></td>
+			<td class="content" valign="top">
+			<jsp:include  page="<%=contentPage%>" flush="false" /></td>
 		</tr>
 		<tr>
 			<td class="bottom" colspan="3"><jsp:include page="bottom.jsp"

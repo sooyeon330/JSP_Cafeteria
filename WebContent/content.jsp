@@ -11,7 +11,9 @@
     <title></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <style>
-     
+     .card-text{
+     	text-align: left;
+     }
     </style>
 </head>
 <body>
@@ -26,7 +28,7 @@ try{
 	
 	Class.forName("oracle.jdbc.driver.OracleDriver");
 	conn = DriverManager.getConnection(url, user, pass);
-	pstmt = conn.prepareStatement("select id,to_char(eatdate,'YYYY-MM-DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria");
+	pstmt = conn.prepareStatement("select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria");
 	rs = pstmt.executeQuery();
 	
 	ArrayList<Cafeteria> menuall = new ArrayList<>();
@@ -68,7 +70,7 @@ try{
 	        <div class="col-2">
 	          <div class="card">
 	            <div class="card-header">
-	             <%= menuall.get(i).getEatdate()+"  , " +(i+1) %>
+	             <%= menuall.get(i).getEatdate()+" ("+menuall.get(i).getEatday()+")"%>
 	            </div>
 	            <div class="card-body">
 	            <p class='card-text'>
