@@ -3,6 +3,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@page import="java.sql.*"%>
+<%@page import="java.util.Date" %>
+<%@page import="java.text.SimpleDateFormat" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,12 +24,14 @@
     	width:188px;
     	margin-bottom: 5px;
     }
-    
+    .btn{
+    	margin:5px;
+    }
     </style>
     <script>
     $(function(){  
     	var m = <%=request.getParameter("m")%>
-     	
+
     	if(m==1) {
     		$(".lun").css("display","none");
     		$(".din").css("display","none");
@@ -49,7 +53,7 @@
             altField: "#date",
             
         });  
-  
+        $("#datepicker").datepicker("show");
 	});
 	
 	
@@ -72,12 +76,15 @@
   <div class="date-block ui-datepicker-trigger">
           <div class="date-day">Monday</div>
           <div class="date-date">9</div>
-          <span class="date-month">September</span>,
+          <span class="date-month">September</span>
           <span class="date-year">2019</span>
   </div>
   <div id="datepicker"></div>
   <form id="form" action="main.jsp" method="post">
- 	 <input name="picdate" id="date" type="text">
+ 	 <input name="picdate" id="date" type="text"><br>
+	 <input type="radio" name="m" value="1">조식
+	 <input type="radio" name="m" value="2">중식
+	 <input type="radio" name="m" value="3">석식
  	 <input type="submit" value="찾기">
   </form>
  
@@ -87,16 +94,20 @@
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=2'">중식</button>
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?m=3'">석식</button>
 	<button type="button" class="btn btn-success" onclick="location.href='main.jsp'">전체보기</button>
+	<button type="button" class="btn btn-success" onclick="location.href='main.jsp?to=t'">오늘보기</button>
 </nav>
 </aside>
 <section>
+<%! SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd"); %>
 <%
 
 	request.setCharacterEncoding("utf-8");
 
-	String date = request.getParameter("picdate");
-	String search  = request.getParameter("search");
-
+	String date = request.getParameter("picdate"); //검색날짜
+	String select = request.getParameter("select"); //검색 조중석
+	
+	String search  = request.getParameter("search"); //검색어
+	String today  = request.getParameter("to"); //오늘날짜
 
 Connection conn =null;
 PreparedStatement pstmt = null;
@@ -109,7 +120,9 @@ try{
 	
 	Class.forName("oracle.jdbc.driver.OracleDriver");
 	conn = DriverManager.getConnection(url, user, pass);
-		
+	
+	if(today !=null) date = format1.format(new Date());
+	
 	if(date!= null){
 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
 				+ " where eatdate = '" +date+ "'";
@@ -162,6 +175,7 @@ try{
 	        <div class="col">
 	          <div class="card">
 	            <div class="card-header">
+	             <input type="hidden" class="eatdate" value="<%= menuall.get(i).getEatdate()%>">
 	             <%= menuall.get(i).getEatdate()+" ("+menuall.get(i).getEatday()+")"%>
 	            </div>
 	            <div class="card-body">
