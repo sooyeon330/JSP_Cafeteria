@@ -82,7 +82,10 @@
   </div>
   <div id="datepicker"></div>
   <form id="form" action="main.jsp" method="post">
- 	 <input name="picdate" id="date" type="text">
+ 	 <input name="picdate" id="date" type="text"><br>
+	 <input type="radio" name="m" value="1">조식
+	 <input type="radio" name="m" value="2">중식
+	 <input type="radio" name="m" value="3">석식
  	 <input type="submit" value="찾기">
   </form>
  
@@ -101,9 +104,11 @@
 
 	request.setCharacterEncoding("utf-8");
 
-	String date = request.getParameter("picdate");
-	String search  = request.getParameter("search");
-	String today  = request.getParameter("to");
+	String date = request.getParameter("picdate"); //검색날짜
+	String select = request.getParameter("select"); //검색 조중석
+	
+	String search  = request.getParameter("search"); //검색어
+	String today  = request.getParameter("to"); //오늘날짜
 
 Connection conn =null;
 PreparedStatement pstmt = null;
@@ -118,7 +123,6 @@ try{
 	conn = DriverManager.getConnection(url, user, pass);
 	
 	if(today !=null) date = format1.format(new Date());
-		
 	
 	if(date!= null){
 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
