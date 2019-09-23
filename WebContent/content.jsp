@@ -49,8 +49,7 @@
             altField: "#date",
             
         });  
-        $("#datepicker").datepicker("show");
-    
+  
 	});
 	
 	
@@ -58,6 +57,8 @@
     </script>
 </head>
 <body>
+
+
 <aside>
 <div class="topnav">
   <div class="search-container">
