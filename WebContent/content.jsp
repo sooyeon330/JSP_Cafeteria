@@ -67,9 +67,9 @@
 <div class="topnav">
   <div class="search-container">
     <form action="main.jsp">
-      <input type="radio" name="m" value="1">조식
-	  <input type="radio" name="m" value="2">중식
-	  <input type="radio" name="m" value="3">석식
+	 <input type="radio" name="m" value="1">조식
+	 <input type="radio" name="m" value="2">중식
+	 <input type="radio" name="m" value="3">석식
       <input type="text" placeholder="Search.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>
@@ -135,37 +135,54 @@ try{
 	ArrayList<String> breakfast = new ArrayList<>();
 	ArrayList<String> lunch = new ArrayList<>();
 	ArrayList<String> dinner = new ArrayList<>();
-	ArrayList<String> nullist = new ArrayList<>();
-	nullist.add("");
+
 	
 	if(search!= null){
 /* 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
 				+ " where dinner like '%"+search+"%' or  lunch like '%"+search+"%' or breakfast like '%"+search+"%' "; */
+		if(request.getParameter("m") == null){	
+			sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast, lunch, dinner from cafeteria where BREAKFAST like '%"+search+"%' OR LUNCH like '%"+search+"%' OR DINNER like '%"+search+"%'";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()){
 				
-		sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast, lunch, dinner from cafeteria where BREAKFAST like '%"+search+"%'";
-		pstmt = conn.prepareStatement(sql);
-		rs = pstmt.executeQuery();
-		
-		while(rs.next()){
+				id = rs.getString("id");
+				eatdate = rs.getString("eatdate");
+				eatday = rs.getString("eatday");
+				
+				breaklist = rs.getString("breakfast").split(",");
+				lunchlist = rs.getString("lunch").split(",");
+				dinnerlist = rs.getString("dinner").split(",");
+				
+				breakfast = addlist(breaklist,search);
+				lunch = addlist(lunchlist,search);
+				dinner = addlist(dinnerlist,search);
+				
+				menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
+			}//while
 			
-			id = rs.getString("id");
-			eatdate = rs.getString("eatdate");
-			eatday = rs.getString("eatday");
-			
-			breaklist = rs.getString("breakfast").split(",");
-			lunchlist = rs.getString("lunch").split(",");
-			dinnerlist = rs.getString("dinner").split(",");
-			
-			breakfast = addlist(breaklist,search);
-			lunch = addlist(lunchlist,search);
-			dinner = addlist(dinnerlist,search);
-			
-			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
-			
-		}
-		
-		
-		
+		}else{	
+			switch(request.getParameter("m")){	
+			case "1": sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast from cafeteria where BREAKFAST like '%"+search+"%'";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				SearchSelect(conn, rs, menuall, "breakfast", search);
+				break;
+				
+			case "2":	sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, lunch from cafeteria where LUNCH like '%"+search+"%'";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				SearchSelect(conn, rs, menuall, "lunch", search);
+				break; 
+				
+			case "3":	sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, dinner from cafeteria where DINNER like '%"+search+"%'";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				SearchSelect(conn, rs, menuall, "dinner", search);
+				break;
+			}
+		}//else
 	}
 	else{
 		
@@ -282,6 +299,31 @@ try{
 		}
 		
 		return menulist;
+ }
+ 
+ public void SearchSelect(Connection conn, ResultSet rs, ArrayList<Cafeteria> menuall,String menu,String search) throws Exception{
+		
+		ArrayList<String> menulist = new ArrayList<>();
+		ArrayList<String> nullist = new ArrayList<>();
+		nullist.add("");
+		while(rs.next()){
+			
+			String id = rs.getString("id");
+			String eatdate = rs.getString("eatdate");
+			String eatday = rs.getString("eatday");
+			
+			String[] menuarray = rs.getString(menu).split(",");
+			
+			menulist = addlist(menuarray,search);
+			
+			switch(menu){
+			case "breakfast" : menuall.add(new Cafeteria(id,eatdate,eatday,menulist,nullist,nullist)); break;
+			case "lunch" : menuall.add(new Cafeteria(id,eatdate,eatday,nullist,menulist,nullist)); break;
+			case "dinner" : menuall.add(new Cafeteria(id,eatdate,eatday,nullist,nullist,menulist)); break;
+			}
+			
+			
+		}
  }
  
  %>
