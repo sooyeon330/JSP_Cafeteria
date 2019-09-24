@@ -67,6 +67,9 @@
 <div class="topnav">
   <div class="search-container">
     <form action="main.jsp">
+      <input type="radio" name="m" value="1">조식
+	  <input type="radio" name="m" value="2">중식
+	  <input type="radio" name="m" value="3">석식
       <input type="text" placeholder="Search.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>
@@ -124,16 +127,6 @@ try{
 	Class.forName("oracle.jdbc.driver.OracleDriver");
 	conn = DriverManager.getConnection(url, user, pass);
 	
-	if(today !=null) date = format1.format(new Date());
-	
-	if(date!= null){
-		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
-				+ " where eatdate = '" +date+ "'";
-	}
-	
-	pstmt = conn.prepareStatement(sql);
-	rs = pstmt.executeQuery();
-	
 	
 	String id="";
 	String eatdate="";
@@ -149,7 +142,7 @@ try{
 /* 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
 				+ " where dinner like '%"+search+"%' or  lunch like '%"+search+"%' or breakfast like '%"+search+"%' "; */
 				
-		sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast from cafeteria where BREAKFAST like '%"+search+"%'";
+		sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast, lunch, dinner from cafeteria where BREAKFAST like '%"+search+"%'";
 		pstmt = conn.prepareStatement(sql);
 		rs = pstmt.executeQuery();
 		
@@ -160,11 +153,14 @@ try{
 			eatday = rs.getString("eatday");
 			
 			breaklist = rs.getString("breakfast").split(",");
-		
+			lunchlist = rs.getString("lunch").split(",");
+			dinnerlist = rs.getString("dinner").split(",");
+			
 			breakfast = addlist(breaklist,search);
+			lunch = addlist(lunchlist,search);
+			dinner = addlist(dinnerlist,search);
 			
-			
-			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,nullist,nullist));
+			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
 			
 		}
 		
@@ -172,6 +168,18 @@ try{
 		
 	}
 	else{
+		
+		sql="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria";
+		
+		if(today !=null) date = format1.format(new Date());
+		
+		if(date!= null){
+			sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
+					+ " where eatdate = '" +date+ "'";
+		}
+		
+		pstmt = conn.prepareStatement(sql);
+		rs = pstmt.executeQuery();
 		
 		while(rs.next()){
 		//	out.print("dd");
@@ -184,9 +192,9 @@ try{
 			lunchlist = rs.getString("lunch").split(",");
 			dinnerlist = rs.getString("dinner").split(",");
 			
-			breakfast = addlist(breaklist,search);
-			lunch = addlist(lunchlist,search);
-			dinner = addlist(dinnerlist,search);
+			breakfast = addlist(breaklist,"null");
+			lunch = addlist(lunchlist,"null");
+			dinner = addlist(dinnerlist,"null");
 	
 			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
 			
