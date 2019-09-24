@@ -112,7 +112,10 @@
 Connection conn =null;
 PreparedStatement pstmt = null;
 ResultSet rs = null;
+ArrayList<Cafeteria> menuall = new ArrayList<>();
+Cafeteria menu=null;
 try{
+	
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	String user = "cafeteria";
 	String pass = "3616";
@@ -128,16 +131,9 @@ try{
 				+ " where eatdate = '" +date+ "'";
 	}
 	
-	if(search!= null){
-		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
-				+ " where dinner like '%"+search+"%' or  lunch like '%"+search+"%' or breakfast like '%"+search+"%' ";
-	}
-	
 	pstmt = conn.prepareStatement(sql);
 	rs = pstmt.executeQuery();
 	
-	ArrayList<Cafeteria> menuall = new ArrayList<>();
-	Cafeteria menu=null;	
 	
 	String id="";
 	String eatdate="";
@@ -146,27 +142,56 @@ try{
 	ArrayList<String> breakfast = new ArrayList<>();
 	ArrayList<String> lunch = new ArrayList<>();
 	ArrayList<String> dinner = new ArrayList<>();
+	ArrayList<String> nullist = new ArrayList<>();
+	nullist.add("");
 	
-	while(rs.next()){
-	//	out.print("dd");
-
-		id = rs.getString("id");
-		eatdate = rs.getString("eatdate");
-		eatday = rs.getString("eatday");
+	if(search!= null){
+/* 		sql ="select id,to_char(eatdate,'MM/DD') eatdate,eatday,breakfast,lunch,dinner from cafeteria"
+				+ " where dinner like '%"+search+"%' or  lunch like '%"+search+"%' or breakfast like '%"+search+"%' "; */
+				
+		sql = "select id,to_char(eatdate,'MM/DD') eatdate, eatday, breakfast from cafeteria where BREAKFAST like '%"+search+"%'";
+		pstmt = conn.prepareStatement(sql);
+		rs = pstmt.executeQuery();
 		
-		breaklist = rs.getString("breakfast").split(",");
-		lunchlist = rs.getString("lunch").split(",");
-		dinnerlist = rs.getString("dinner").split(",");
+		while(rs.next()){
+			
+			id = rs.getString("id");
+			eatdate = rs.getString("eatdate");
+			eatday = rs.getString("eatday");
+			
+			breaklist = rs.getString("breakfast").split(",");
 		
-		breakfast = addlist(breaklist);
-		lunch = addlist(lunchlist);
-		dinner = addlist(dinnerlist);
-
-		menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
+			breakfast = addlist(breaklist,search);
+			
+			
+			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,nullist,nullist));
+			
+		}
 		
 		
-	}//while
-
+		
+	}
+	else{
+		
+		while(rs.next()){
+		//	out.print("dd");
+	
+			id = rs.getString("id");
+			eatdate = rs.getString("eatdate");
+			eatday = rs.getString("eatday");
+			
+			breaklist = rs.getString("breakfast").split(",");
+			lunchlist = rs.getString("lunch").split(",");
+			dinnerlist = rs.getString("dinner").split(",");
+			
+			breakfast = addlist(breaklist,search);
+			lunch = addlist(lunchlist,search);
+			dinner = addlist(dinnerlist,search);
+	
+			menuall.add(new Cafeteria(id,eatdate,eatday,breakfast,lunch,dinner));
+			
+		}//while
+	}
 
 
 		for(int i=0; i<menuall.size(); i++){
@@ -239,10 +264,13 @@ try{
  	
  <%!
  
- public ArrayList<String> addlist(String[] menuarray ){
+ public ArrayList<String> addlist(String[] menuarray, String search){
 		ArrayList<String> menulist = new ArrayList<>();
 		for(int i=0; i<menuarray.length; i++){ //가져온 길이만큼 반복해 
-			menulist.add(menuarray[i]+"<br>");//그냥 임시리스트에 추가
+			if(menuarray[i].contains(search) ){
+				menulist.add("<strong>"+menuarray[i].substring(0,menuarray[i].length())+"</strong><br>");//문자열 강조해서 임시리스트에 추가
+			}
+			else menulist.add(menuarray[i]+"<br>");//그냥 임시리스트에 추가
 		}
 		
 		return menulist;
